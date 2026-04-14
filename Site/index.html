@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vale PortSync AI</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .page { display: none; }
+    .page.active { display: block; }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-badge">⚓</div>
+        <div>
+          <div class="brand-title" data-role="system-name">Vale PortSync AI</div>
+          <div class="brand-subtitle">Painel operacional inteligente</div>
+        </div>
+      </div>
+
+      <nav class="nav-list">
+        <button class="nav-btn active" data-page-btn="inicio"><span class="nav-icon">🏠</span><span>Início</span></button>
+        <button class="nav-btn" data-page-btn="mapa"><span class="nav-icon">🗺️</span><span>Mapa Operacional</span></button>
+        <button class="nav-btn" data-page-btn="solicitacao"><span class="nav-icon">📝</span><span>Solicitação</span></button>
+        <button class="nav-btn" data-page-btn="decisao"><span class="nav-icon">🧠</span><span>Decisão IA</span></button>
+        <button class="nav-btn" data-page-btn="resultados"><span class="nav-icon">📊</span><span>Resultados</span></button>
+        <button class="nav-btn" data-page-btn="carga"><span class="nav-icon">📦</span><span>Carga Monitorada</span></button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <strong>Estrutura limpa</strong>
+        <p>Agora o HTML ficou separado do JavaScript. O JS cuida só dos dados, eventos e atualizações da tela.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="header">
+        <div>
+          <h1 data-role="header-title">Início</h1>
+          <p data-role="header-subtitle">Visão geral do sistema e resumo das operações</p>
+        </div>
+        <div class="header-right">
+          <div class="status-pill"><span class="dot"></span> Sistema online</div>
+          <button class="btn outline" id="export-data-btn">Exportar dados</button>
+          <button class="btn danger" id="reset-data-btn">Resetar demo</button>
+        </div>
+      </header>
+
+      <section class="page active" data-page="inicio">
+        <div class="content">
+          <div class="hero">
+            <div class="hero-panel">
+              <h2 data-role="hero-system-name">Vale PortSync AI</h2>
+              <p>Sistema inteligente de roteirização em tempo real para operações portuárias, com entrada de dados pelo usuário, recomendação automática de veículo e atualização visual das telas.</p>
+              <div class="actions">
+                <button class="btn primary" data-go-page="solicitacao">Nova solicitação</button>
+                <button class="btn success" data-go-page="carga">Registrar carga</button>
+              </div>
+            </div>
+            <div class="hero-side">
+              <h3>Última recomendação</h3>
+              <p data-role="last-recommendation-text">Nenhuma análise recente.</p>
+              <div class="mini-pill" data-role="last-request-id">Sem solicitação</div>
+            </div>
+          </div>
+
+          <div class="kpis">
+            <div class="kpi"><div class="kpi-label">Veículos em rota</div><div class="kpi-value" data-role="kpi-active-vehicles">0</div><small>Operando agora</small></div>
+            <div class="kpi"><div class="kpi-label">Veículos disponíveis</div><div class="kpi-value" data-role="kpi-available-vehicles">0</div><small>Prontos para nova missão</small></div>
+            <div class="kpi"><div class="kpi-label">Cargas monitoradas</div><div class="kpi-value" data-role="kpi-cargo-count">0</div><small>Registros totais</small></div>
+          </div>
+
+          <div class="grid-2">
+            <div class="card">
+              <div class="section-title"><h3>Eventos recentes</h3><span class="muted">Atualizado em tempo real</span></div>
+              <div class="timeline" id="events-list"></div>
+            </div>
+            <div class="card">
+              <div class="section-title"><h3>Resumo operacional</h3><span class="muted">Dados do sistema</span></div>
+              <div class="metric-list">
+                <div class="metric-row"><span>Solicitações registradas</span><strong data-role="metric-requests">0</strong></div>
+                <div class="metric-row"><span>Frota cadastrada</span><strong data-role="metric-vehicles">0</strong></div>
+                <div class="metric-row"><span>Última carga vinculada</span><strong data-role="metric-last-cargo">Nenhuma</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="mapa">
+        <div class="content">
+          <div class="card map-card real-map-wrap">
+            <div class="map-topbar">
+              <strong>Mapa real da região operacional</strong>
+              <span class="mini-pill">Ponta da Madeira / São Luís</span>
+            </div>
+            <div class="map-summary">
+              <div class="map-stat"><div class="map-stat-label">Origem</div><div class="map-stat-value" data-role="map-origin">Pátio 1</div></div>
+              <div class="map-stat"><div class="map-stat-label">Destino</div><div class="map-stat-value" data-role="map-destination">Cais 7</div></div>
+              <div class="map-stat"><div class="map-stat-label">Veículo recomendado</div><div class="map-stat-value" data-role="map-recommended-vehicle">V02</div></div>
+            </div>
+            <div id="real-map" class="real-map"></div>
+            <div class="map-note">O mapa usa Leaflet com OpenStreetMap. Os pontos e rotas operacionais são uma simulação sobre uma base geográfica real, pronta para receber coordenadas mais exatas depois.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="solicitacao">
+        <div class="content grid-2-eq">
+          <div class="card">
+            <div class="section-title"><h3>Nova solicitação</h3><span class="muted">Entrada feita pelo usuário</span></div>
+            <form id="request-form">
+              <div class="form-grid">
+                <div class="field"><label for="origin">Origem</label><input id="origin" name="origin" placeholder="Ex.: Pátio 1" required /></div>
+                <div class="field"><label for="destination">Destino</label><input id="destination" name="destination" placeholder="Ex.: Cais 7" required /></div>
+                <div class="field"><label for="priority">Prioridade</label><select id="priority" name="priority"><option>Baixa</option><option selected>Média</option><option>Alta</option></select></div>
+                <div class="field"><label for="cargoType">Tipo de carga</label><input id="cargoType" name="cargoType" placeholder="Ex.: Minério de ferro" required /></div>
+                <div class="field"><label for="weight">Peso / capacidade usada</label><input id="weight" name="weight" type="number" step="0.1" placeholder="Ex.: 26" required /></div>
+                <div class="field"><label for="preferredVehicle">Veículo preferencial</label><select id="preferredVehicle" name="preferredVehicle"><option value="">Seleção automática</option></select></div>
+              </div>
+              <div class="field" style="margin-top: 14px;"><label for="notes">Observações</label><textarea id="notes" name="notes" placeholder="Digite detalhes da operação..."></textarea></div>
+              <div class="actions">
+                <button class="btn primary" type="submit">Analisar com IA</button>
+              </div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="section-title"><h3>Última análise</h3><span class="muted">Comparativo automático</span></div>
+            <div id="request-recommendation-box" class="empty">Cadastre uma solicitação para ver a recomendação.</div>
+            <div class="table-wrap" style="margin-top: 16px;">
+              <table>
+                <thead>
+                  <tr><th>Veículo</th><th>Local</th><th>ETA</th><th>Score IA</th><th>Status</th></tr>
+                </thead>
+                <tbody id="request-ranking-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="decisao">
+        <div class="content grid-2">
+          <div class="card">
+            <div class="section-title"><h3>Decisão inteligente</h3><span class="muted">Melhor rota e melhor veículo</span></div>
+            <div class="metric-list">
+              <div class="metric-row"><span>Solicitação</span><strong data-role="decision-request-id">-</strong></div>
+              <div class="metric-row"><span>Origem → Destino</span><strong data-role="decision-route">-</strong></div>
+              <div class="metric-row"><span>Veículo escolhido</span><strong data-role="decision-vehicle">-</strong></div>
+              <div class="metric-row"><span>Confiança</span><strong data-role="decision-score">-</strong></div>
+              <div class="metric-row"><span>Carga</span><strong data-role="decision-cargo">-</strong></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>Orientação operacional</h3><span class="muted">Resposta gerada automaticamente</span></div>
+            <div id="decision-summary" class="empty">Nenhuma solicitação analisada ainda.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="resultados">
+        <div class="content grid-2-eq">
+          <div class="card">
+            <div class="section-title"><h3>Frota monitorada</h3><button class="btn outline" data-go-page="carga">Ir para cargas</button></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>Veículo</th><th>Localização</th><th>Status</th><th>Carga atual</th><th>ETA</th></tr>
+                </thead>
+                <tbody id="vehicles-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card">
+            <div class="section-title"><h3>Cadastrar veículo</h3><span class="muted">Adição manual</span></div>
+            <form id="vehicle-form">
+              <div class="form-grid">
+                <div class="field"><label for="vehicleLocation">Localização</label><input id="vehicleLocation" name="location" placeholder="Ex.: Base" required /></div>
+                <div class="field"><label for="vehicleStatus">Status</label><select id="vehicleStatus" name="status"><option>Disponível</option><option>Em rota</option><option>Aguardando</option><option>Alerta</option></select></div>
+                <div class="field"><label for="vehicleCapacity">Capacidade</label><input id="vehicleCapacity" name="capacity" type="number" step="0.1" placeholder="Ex.: 35" required /></div>
+                <div class="field"><label for="vehicleCurrentLoad">Carga atual</label><input id="vehicleCurrentLoad" name="currentLoad" type="number" step="0.1" placeholder="Ex.: 12" required /></div>
+                <div class="field"><label for="vehicleCargoType">Tipo de carga</label><input id="vehicleCargoType" name="cargoType" placeholder="Ex.: Livre" required /></div>
+                <div class="field"><label for="vehicleEta">ETA (min)</label><input id="vehicleEta" name="eta" type="number" placeholder="Ex.: 10" required /></div>
+              </div>
+              <div class="actions"><button class="btn success" type="submit">Adicionar veículo</button></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <section class="page" data-page="carga">
+        <div class="content grid-2-eq">
+          <div class="card">
+            <div class="section-title"><h3>Registrar carga monitorada</h3><span class="muted">Dados informados pelo usuário</span></div>
+            <form id="cargo-form">
+              <div class="form-grid">
+                <div class="field"><label for="cargoVehicleId">Veículo</label><select id="cargoVehicleId" name="vehicleId"></select></div>
+                <div class="field"><label for="cargoTypeInput">Tipo de carga</label><input id="cargoTypeInput" name="cargoType" placeholder="Ex.: Minério de ferro" required /></div>
+                <div class="field"><label for="cargoWeight">Peso</label><input id="cargoWeight" name="weight" type="number" step="0.1" placeholder="Ex.: 32.4" required /></div>
+                <div class="field"><label for="cargoStatus">Status</label><select id="cargoStatus" name="status"><option>Registrada</option><option>Em trânsito</option><option>Aguardando descarga</option><option>Entregue</option></select></div>
+                <div class="field"><label for="cargoOrigin">Origem</label><input id="cargoOrigin" name="origin" placeholder="Ex.: Área de Recuperação" required /></div>
+                <div class="field"><label for="cargoDestination">Destino</label><input id="cargoDestination" name="destination" placeholder="Ex.: Pier III" required /></div>
+                <div class="field"><label for="cargoEta">ETA</label><input id="cargoEta" name="eta" placeholder="Ex.: 10:49" required /></div>
+                <div class="field"><label for="cargoConfidence">Confiança IA (%)</label><input id="cargoConfidence" name="confidence" type="number" step="0.1" placeholder="Ex.: 98.7" required /></div>
+              </div>
+              <div class="field" style="margin-top: 14px;"><label for="cargoNotes">Observações</label><textarea id="cargoNotes" name="notes" placeholder="Ex.: Registro automático por sensores."></textarea></div>
+              <div class="actions"><button class="btn primary" type="submit">Salvar carga</button></div>
+            </form>
+          </div>
+
+          <div class="card">
+            <div class="section-title"><h3>Registros de carga</h3><span class="muted">Histórico monitorado</span></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr><th>ID</th><th>Veículo</th><th>Tipo</th><th>Peso</th><th>Status</th><th>Destino</th></tr>
+                </thead>
+                <tbody id="cargo-table-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="script.js"></script>
+</body>
+</html>
